@@ -2,24 +2,115 @@ openapi: 3.0.0
 info:
   title: GitHub API Documentation
   version: 1.0.0
+  description: This documentation covers the GitHub API endpoints for accessing user data and managing repositories.
 servers:
   - url: https://api.github.com
+
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the user
+        login:
+          type: string
+          description: The GitHub username
+    Repository:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the repository
+        name:
+          type: string
+          description: The name of the repository
+        owner:
+          $ref: '#/components/schemas/User'
+
 security:
   - BearerAuth: []
+
+tags:
+  - name: User
+    description: Operations related to user information
+  - name: Repositories
+    description: Operations related to repository management
+
 paths:
   /user:
     get:
+      tags:
+        - User
       summary: Get authenticated user information
+      description: Retrieves information about the currently authenticated GitHub user.
       security:
         - BearerAuth: []
       responses:
         '200':
           description: A successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '401':
           description: Unauthorized access
+
+  /repos/{owner}/{repo}:
+    get:
+      tags:
+        - Repositories
+      summary: Get repository details
+      description: Retrieves information about a specific repository owned by the given user.
+      parameters:
+        - in: path
+          name: owner
+          required: true
+          schema:
+            type: string
+          description: The owner of the repository
+        - in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+          description: The repository name
+      responses:
+        '200':
+          description: Repository details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        '404':
+          description: Repository not found
+
+  /users/{username}:
+    get:
+      tags:
+        - User
+      summary: Get public user information
+      description: Retrieves public information about a GitHub user.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: The GitHub username to fetch information for
+      responses:
+        '200':
+          description: A successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
