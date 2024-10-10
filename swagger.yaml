@@ -114,3 +114,138 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: User not found
+
+
+  /user/repos:
+    get:
+      summary: List repositories for the authenticated user
+      security:
+        - BearerAuth: []
+      description: |
+        This endpoint retrieves a list of repositories for the authenticated user.
+        You must provide a valid Personal Access Token (PAT) in the Authorization header.
+      responses:
+        '200':
+          description: A list of repositories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1296269
+                    name:
+                      type: string
+                      example: "Hello-World"
+                    private:
+                      type: boolean
+                      example: false
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+
+  /repos/{owner}/{repo}:
+    get:
+      summary: Get repository details
+      security:
+        - BearerAuth: []
+      description: |
+        This endpoint retrieves details for a specific repository.
+        Provide the owner's GitHub username and the repository name in the path.
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the repository.
+      responses:
+        '200':
+          description: Repository details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1296269
+                  name:
+                    type: string
+                    example: "Hello-World"
+                  full_name:
+                    type: string
+                    example: "octocat/Hello-World"
+                  private:
+                    type: boolean
+                    example: false
+                  owner:
+                    type: object
+                    properties:
+                      login:
+                        type: string
+                        example: "octocat"
+                      id:
+                        type: integer
+                        example: 1
+        '404':
+          description: Repository not found     
+
+
+  /repos/{owner}/{repo}/issues:
+    get:
+      summary: List issues for a repository
+      security:
+        - BearerAuth: []
+      description: |
+        This endpoint lists the issues for a specific repository.
+        You must provide the owner's GitHub username and the repository name in the path.
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the repository.
+      responses:
+        '200':
+          description: A list of issues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: "Found a bug"
+                    state:
+                      type: string
+                      example: "open"
+                    user:
+                      type: object
+                      properties:
+                        login:
+                          type: string
+                          example: "octocat"
+        '404':
+          description: Repository not found          
