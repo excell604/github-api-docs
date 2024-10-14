@@ -113,8 +113,61 @@ curl -H "Authorization: Bearer YOUR_PERSONAL_ACCESS_TOKEN" https://api.github.co
      https://api.github.com/repos/{owner}/{repo}/issues
   ```
    -Response: Returns the details of the created issue.
+
   
+ ## Error Handling for Core Endpoints
+
+ When interacting with the GitHub API, users may encounter various errors. Below are the common errors and how to resolve them.
  
+1. Common HTTP Status Codes
+
+	•	401 Unauthorized: Missing or invalid token.
+
+		Solution: Include a valid token in the request header.
+
+	•	403 Forbidden: Lack of permission to access user data.
+
+		Solution: Verify user permissions.
+
+3. Error Handling for Core Endpoints
+
+GET /user:
+
+	•	401 Unauthorized: Missing or invalid token.
+	•	Solution: Include a valid token in the request header.
+	•	403 Forbidden: Lack of permission to access user data.
+	•	Solution: Verify user permissions.
+
+GET /user/repos:
+
+	•	401 Unauthorized: Missing or invalid access token.
+	•	Solution: Provide a valid token.
+	•	404 Not Found: No repositories found or they are private.
+	•	Solution: Confirm user’s repositories and access permissions.
+
+GET /repos/{owner}/{repo}/commits:
+
+	•	401 Unauthorized: No valid authentication provided.
+	•	Solution: Ensure the correct token with the necessary scopes.
+	•	404 Not Found: Repository does not exist or is private.
+	•	Solution: Ensure the repository exists and is accessible.
+
+POST /repos/{owner}/{repo}/issues:
+
+	•	401 Unauthorized: Invalid or missing access token.
+	•	Solution: Include a valid token.
+	•	403 Forbidden: Lack of write permissions to the repository.
+	•	Solution: Check that the authenticated user has write access.
+	•	422 Unprocessable Entity: Missing required fields or invalid data.
+	•	Solution: Ensure the required fields are provided and properly formatted.
+
+ 3. Rate Limiting
+
+GitHub API enforces rate limits. Exceeding these limits will return a 403 Forbidden error.
+
+	•	403 Forbidden (Rate Limit Exceeded):
+	•	Solution: Check the response headers for X-RateLimit-Remaining and X-RateLimit-Reset. Wait until the rate limit resets before retrying the request.
+
 
     
      
