@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: GitHub API Documentation
+  description: Swagger documentation for GitHub API endpoints.
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/AEXCEL780/GithubApi/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /repos/{owner}/{repo}/commits:
+    get:
+      summary: Get commits for a repository
+      description: Retrieve the list of commits for the specified repository.
+      parameters:
+      - name: owner
+        in: path
+        description: Owner of the repository
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: repo
+        in: path
+        description: Name of the repository
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Commits successfully retrieved
+        "401":
+          description: Unauthorized - Requires authentication
+        "403":
+          description: Forbidden - Insufficient permissions
+        "404":
+          description: Not Found - Repository or commits not found
+      security:
+      - BearerAuth: []
+  /repos/{owner}/{repo}/issues:
+    post:
+      summary: Create a new issue in a repository
+      description: This endpoint allows you to create a new issue in a specified GitHub repository.
+      parameters:
+      - name: owner
+        in: path
+        description: Owner of the repository
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: repo
+        in: path
+        description: Name of the repository
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Details of the new issue to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/repo_issues_body'
+        required: true
+      responses:
+        "201":
+          description: Issue successfully created
+        "400":
+          description: Bad Request - Invalid input
+        "401":
+          description: Unauthorized - Requires authentication
+        "403":
+          description: Forbidden - Insufficient permissions
+        "404":
+          description: Not Found - Repository not found
+      security:
+      - BearerAuth: []
+components:
+  schemas:
+    repo_issues_body:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the issue
+        body:
+          type: string
+          description: Body content of the issue
+        assignees:
+          type: array
+          description: Usernames to assign the issue to
+          items:
+            type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
