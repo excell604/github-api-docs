@@ -115,7 +115,7 @@ curl -H "Authorization: Bearer YOUR_PERSONAL_ACCESS_TOKEN" https://api.github.co
    -Response: Returns the details of the created issue.
 
   
- ## Error Handling for Core Endpoints
+ ## Error Handling
 
  When interacting with the GitHub API, users may encounter various errors. Below are the common errors and how to resolve them.
  
